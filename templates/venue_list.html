@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/css/style_venue_list.css?v=1.0.6.7">
+    <title>Venues</title>
+    <style>
+        #heada1{
+            background-image: url("{{ url_for('static', filename='images/guangsha.png') }}");
+        }
+        #heada1:hover{
+            background-image: url("{{ url_for('static', filename='images/b.png') }}");
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav id="navi">
+            <div class="headdiv">
+                <a id="heada1" href="/main" >
+                </a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="https://itzy.jype.com/" target="_blank">Venues</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">Artists</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">Shows</a>
+            </div>
+        </nav>
+    </header>
+    <div class="list-wrapper">
+        <ul id="venues">
+          {% for venue in venues%}
+          <li class="item">
+            <a href="/venue_list/{{venue.id}}" class="head" action="">
+              {{venue.name}}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    
+</body>
+</html>

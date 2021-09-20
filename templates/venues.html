@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Venue_Regist</title>
+    <link rel="stylesheet" href="../static/css/style_venues.css?v=1.0.5">
+    <style>
+        #heada1{
+            background-image: url("{{ url_for('static', filename='images/guangsha.png') }}");
+        }
+        #heada1:hover{
+            background-image: url("{{ url_for('static', filename='images/b.png') }}");
+        }
+    </style>
+</head>
+<body class="container">
+    <header class="header">
+        <nav id="navi">
+            <div class="headdiv">
+                <a id="heada1" href="main" >
+                </a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="https://itzy.jype.com/" target="_blank">itzy官网</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">nnn</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">kkk</a>
+            </div>
+        </nav>
+    </header>
+    
+    <article class="left">
+        <div id="main1sub1">
+            <strong style="margin-right: 23%;">List a new venue</strong>
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
+                <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
+              </svg>
+        </div>
+        <form class="form1" id="main1sub2" method="post", action="/venues/create">
+            <div id="list1">
+                <legend class="legend">Name</legend>
+                <input id="in1" type="text">
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1">
+                <legend class="legend">City & State</legend>
+                <div class="legend">
+                    <input id="in2" type="text" placeholder="city">
+                    <select name="" id="city_select">
+                        <option value="">Sichuan</option>
+                        <option value="">CA</option>
+                        <option value="">Singapore</option>
+                        <option value="">Georgea</option>
+                        <option value="">Tianjisheng</option>
+                        <option value="">Unknown</option>
+                    </select>
+                </div> 
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1"> 
+                <legend class="legend">Phone</legend>
+                <input id="in3" type="text" placeholder="xxx-xxx-xxxx">
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1"> 
+                <legend class="legend">Address</legend>
+                <input id="in4" type="text">
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list2">
+                <legend class="legend">
+                    <div style="font-size: 18px;">Genres  
+                        <span style="color: gainsboro; font-size: 15px;">Ctrl+Click to select multiple</span></div>
+                </legend>
+                <select name="" id="in5" class="form_select" multiple aria-label="multiple select example">
+                    <option value="1">Jazz</option>
+                    <option value="2">Hip-pop</option>
+                    <option value="3">Sole</option>
+                    <option value="4">Corea-pop</option>
+                    <option value="5">Chinese-pop</option>
+                    <option value="6">Chinese-tradional</option>
+                    <option value="7">European</option>
+                    <option value="8">Country</option>
+                    <option value="9">2000</option>
+                    <option value="10">Dancing</option>
+                </select>
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1">
+                <legend class="legend">Facebook Link</legend>
+                <input id="in6" type="text" placeholder="http://">
+            </div>
+            <div class="margin_bar"></div>
+            <button class="button" type="submit">Create Venue</button>
+        </form>
+    </article>
+    <footer class="footer">footer</footer>
+    <script>
+        document.getElementById('main1sub2').onsubmit=function(e){ 
+            e.preventDefault();
+            console.log('event',e);
+            const states=document.getElementById('city_select');
+            const state_index=states.selectedIndex;
+            const state= states.options[state_index].text;
+            const e2=document.getElementById('in5');
+            var selected = [];
+            for (var option of e2.options)
+            {
+                if (option.selected) {
+                    selected.push(option.text);
+                }
+            }
+            fetch('/venues/create',{
+                method : 'POST',
+                body : JSON.stringify({
+                    'name':document.getElementById('in1').value,
+                    'city':document.getElementById('in2').value,
+                    'state':state,
+                    'genres': selected,
+                    'phone': document.getElementById('in3').value,
+                    'address': document.getElementById('in4').value,
+                    'facebook_link': document.getElementById('in6').value
+                }),
+                headers : {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(function(jsonResponse){
+                if(jsonResponse.status=='exist'){
+                    alert('cannot create reapted venue!');
+                    location.reload();
+                }
+                else
+                {
+                    alert('create successfully!');
+                    location.reload();
+                }
+            })
+            .catch((error) => {
+            console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

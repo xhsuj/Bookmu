@@ -1,0 +1,252 @@
+cd ~/class-demos 
+(use for change the direction of the path to the intented folders in the terminal
+, in this case, we change the directory from home folder,which is represented by '~', 
+to the particular folder, which is class-demos)
+
+
+mkdir todoapp
+(make a new folder/directory in the current path. In this case, we make a new 
+folder named todoapp in the current folder, class-demos)
+
+cd todoapp
+(since we have arrived the current holder which contains the intented folder directly, we just need to use cd todoapp without ~)
+
+touch app.py
+(create a new python file named app in the current folder, todoapp)
+
+from flask import Flask
+(flask is a web framework, a Python module that lets you develop web applications easily,
+this command line import Flask class to app.py, which allows us to create an application object
+Flask is the prototype used to create instances of web application or web applications)
+
+app=Flask(__name__)
+(create an instance of Flask class for our application __name__ , a special variable when executing the script)
+
+@app.route('/')
+def home():
+    return "Hello"
+(use the @app.route('/') decorator to activate the function when the URL is localhost:5000; then the function would
+return "Hello" on the webpage; if in the '' is '/about', then the function will be activated if the URL is 
+localhost:5000/about)
+
+if __name__ =='__main__':
+    app.run(debug=True)
+
+(when excuting the script, Python would automatically assign "__main__" to the variable __name__ , if all of the conditions
+are well set; under this outcome, the if statement would be true and the application would run; if the transcript is imported
+from another transcript, the name of that script would be kept as its file name(xxx.py); in this case, we are executing the file
+,so python would give "__main__" to __name__)
+
+(debug=True would activate Python to track any potential errors when run the flask app, but when in a production environment,
+it's better to assign False to debug to avoid security problems)
+
+from flask import render_template
+@app.route('/')
+def home():
+    return render_template('xxx.html', data=[{'a':'abb'},{'a':'bcc'}])
+(render_template is a package of flask which contains render_template() method to allow us to attach particular
+html file and other needed data to the specific route, so that when the client browse the URL, that html file from template 
+folders would be attached on the webpage; the data list after the html files can be presented through jinja(the flask's template
+engine, allowing us to embed none html inside a html file), command lines)
+
+{% for d in data %}
+<li>{{d.a}}</li>
+{% endfor %}
+(in html, these jinja commands use a for loop to retrieve data transferred by render_template() method and present it)
+
+FLASK_APP=app.py FLASK_DEBUG=true flask run 
+(run the flask application on the terminal)
+
+
+from flask_sqlalchemy import SQLAlchemy
+(flask_sqlalchemy is an extension to flask that provides SQLAlchemy for facilitating the inter-connection between 
+databases and python programms; SQLAlchemy offers an ORM(objecgt relational mapping), which maps tables and columns 
+to class objects and attributes)
+
+db=SQLAlchemy(app)
+(create a db object to link SQLAlchemy to our application)
+
+app.config['SQLALCHEMY_DATABASE_URI']= 'postgresql://yhb@localhost:5432/bookmu'
+'dialect://username:password@host:port/databasename' (password is optional)
+(assign the intented database's URI to the attribute 'SQLALCHEMY_DATABASE_URI' of app's config)
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
+(if set to True, Flask-SQLAlchemy will track modifications of objects and emit signals, which would requires more memory
+and could be set to false if not necessary)
+
+class Shows(db.Model):
+    __tablename__: shows //set the name of the table, if not use this, the name would be lower_letter string of the class name
+    id=db.Column(db.Integer,primary_key=True)
+    artist_id=db.Column(db.Integer,db.ForeignKey('artist.id'),nullable=False,default=False)
+    def __repr__(self):
+        return f'<Artist {self.id} {self.name} {self.city} {self.state} {self.phone} {self.facebook_link}>'
+
+(db.Model is an object that allows to create table and manipulate it; db.session allows to create and manipulate transactions
+__repr__ is a special method in python to produce the data in the form of string, called by repr(), a
+built-in function of python; we can rewrite our own repr method;
+Special methods are a set of predefined methods used to enrich your classes. They start and end with double underscores.)
+
+db.create_all()
+(create the designed tables in the database through python and SQLAlchemy, if they have not been created yet)
+
+@app.route('/')
+def home():
+    return render_template('xxx.html', data=Class.query.all())
+
+(return the data selected from the linked database's table through SQLAlchemy)
+
+data_string=request.data //request.form[] or request.get_json()[]
+data_dictionary=json.loads(data_string)
+(using json as a means of trasmitting data between view and controller; import request module to create request object
+request.data would retrieve JSON data as string type, and json.loads would allow to parse the string into Python dictionaries or list)
+
+
+<form class="form1" id="main1sub2" method="post", action="/venues/create">
+</form>
+(action contains the route through which the the customers would get changed webpage when click the submit button of the form
+,while method indicates the kind of interaction the view may have with the database, in this case, post means create new items)
+
+<input id="in1" type="text", name="descrption">
+<input id="in1" type="text", name="descrption1">
+descrption=request.form.get('descprtion','') //default empty string
+(the name attribute of the input filed is used to retrieve the content of the input through request.form.get in the 
+python programm; in addtion, through post method and create new item using the content of the input of the form,
+the content type would be application/x-www-form-urlencoded, the default content type whenever you submit a form.
+third, the data submitted through post method would be collectively transformed into a combined string, and become
+part of a response body; the string looks like: descrption=value1&descprtion1=value2)
+
+@app.route('/show/create',methods=['POST'])
+def create_show():
+(in flask, use the methods=['',''] to idicate the method used in html the handler would listen to, then 
+the function would be allowed to do request.form.get... or request.form[], to parse the data)
+
+<form class="form1" id="main1sub2" method="get", action="/venues/create">
+<input id="in1" type="text", name="descrption">
+<input id="in1" type="text", name="descrption1">
+(through get method, the data collected would be combined in the url, like venues/create/?descrption=value1&descprtion1=value2
+and we should get these data thorugh: request.args.get('descrption'))
+
+from flask import url_for, redirect
+return redirect(url_for('index',data)) //if add data, then it would be tokenized as /<data> which can be used in other function
+(import url_for and redirect, we can refresh an updated page and return it, used when newly created items need to be
+presented immeidately on the webpage)
+
+
+fetch('/venues/create',{
+                method : 'POST',
+                body : JSON.stringify({
+                    'name':document.getElementById('in1').value,
+                    'city':document.getElementById('in2').value,
+                    'state':state,
+                    'genres': selected,
+                    'phone': document.getElementById('in3').value,
+                    'address': document.getElementById('in4').value,
+                    'facebook_link': document.getElementById('in6').value
+                }),
+                headers : {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+(use fetch to asynchronally interact with databse, the get or changed data are not necessarily be presented 
+immeidately on the page, but can be checked and do corresponding reaction based on the passed information from backend
+; method indicates the method used, body contains the passed data, here use JSON.stringify to convert the JSON data into 
+string, and headers to tell the python program what type of data you are transmit, so that they can parse the data correctly)
+
+
+
+
+document.getElementById('main1sub2').onsubmit=function(e){  //get the form element, and define a function when form is submitted
+            e.preventDefault(); //e indicates the event object, which, thorugh a handler function would be automatically created by
+            //the javascript engine using the name you define(in this case, the 'e'); it actually does this:
+            //var e = new Event();
+            //callbackFunction(e); 
+            //the function would work fine even without the indication of e parameter, but if we do not pass this,
+            //we would be unable to retrieve information about the particular event since it's not extracted
+            console.log('event',e);
+            const states=document.getElementById('city_select');
+            const state_index=states.selectedIndex;
+            const state= states.options[state_index].text;
+            const e2=document.getElementById('in5');
+            var selected = [];
+            for (var option of e2.options)
+            {
+                if (option.selected) {
+                    selected.push(option.text);
+                }
+            }
+            fetch('/venues/create',{  //indicate the router
+                method : 'POST',
+                body : JSON.stringify({
+                    'name':document.getElementById('in1').value,
+                    'city':document.getElementById('in2').value,
+                    'state':state,
+                    'genres': selected,
+                    'phone': document.getElementById('in3').value,
+                    'address': document.getElementById('in4').value,
+                    'facebook_link': document.getElementById('in6').value
+                }),
+                headers : {
+                    'Content-Type': 'application/json' //indicate the type of the content so that in python the program would do correct transformation
+                }
+            })
+            .then(response => response.json()) //the python would pass a response as a promise to the js, and response.json()
+            //would transform the response into json type
+            .then(function(jsonResponse){
+                if(jsonResponse.status=='exist'){
+                    alert('cannot create reapted venue!');
+                    location.reload();
+                }
+                else
+                {
+                    alert('create successfully!');
+                    location.reload();
+                }
+            })
+            .catch((error) => {
+            console.error('Error:', error);
+            });
+        }
+
+        
+from flask import jsonify
+return jsonify({
+    '':''
+    '':''
+    '':''
+})
+
+(help return json data to the client)
+    def create_show():
+    error=False
+    body={}
+    body['status']='non-exist'
+    try:
+        artist_id=request.get_json()['artist_id']
+        venue_id=request.get_json()['venue_id']
+        start_time=request.get_json()['start_time']
+        if (bool(Shows.query.filter_by(artist_id=artist_id,venue_id=venue_id,start_time=start_time).first())==True):
+            db.session.commit()
+            body['status']=['exist']
+        else:
+            show=Shows(artist_id=artist_id,venue_id=venue_id,start_time=start_time)
+            db.session.add(show)
+            db.session.commit()
+            body['artist_id']=show.artist_id
+            body['venue_id']=show.venue_id
+            body['start_time']=show.start_time
+    except: //if anything goes wrong in try:
+        error=True //used in if error to represent error
+        db.session.rollback() //rollback the whole session
+        print(sys.exc_info()) //print the error through import sys
+    finally:
+        db.session.close()
+    if error:
+        abort (400)
+    if not error:
+        return jsonify(body) //note that we create a body variable to store the data without returning directly
+        //jsonify({sometable.attribue}) because when the session is closed after db.session.close(), we cannot access
+        //the table of it, so we have to copy the data into a outer variable and pass it if no error occurs
+
+(try except and finally combination introduce an error-check process for flask program)
+

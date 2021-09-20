@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist_Regist</title>
+    <link rel="stylesheet" href="../static/css/style_artist.css?v=1.0.2">
+    <style>
+        #heada1{
+            background-image: url("{{ url_for('static', filename='images/guangsha.png') }}");
+        }
+        #heada1:hover{
+            background-image: url("{{ url_for('static', filename='images/b.png') }}");
+        }
+    </style>
+</head>
+<body class="container">
+    <header class="header">
+        <nav id="navi">
+            <div class="headdiv">
+                <a id="heada1" href="main" >
+                </a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="https://itzy.jype.com/" target="_blank">itzy官网</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">nnn</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">kkk</a>
+            </div>
+        </nav>
+    </header>
+    
+    <article class="left">
+        <div id="main1sub1">
+            <strong>List a new artist</strong>
+        </div>
+        <form class="form1" action="/artist/create", id="main1sub2">
+            <div id="list1">
+                <legend class="legend">Name</legend>
+                <input id="in1" type="text">
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1">
+                <legend class="legend">City & State</legend>
+                <div class="legend">
+                    <input id="in2" type="text" placeholder="city">
+                    <select name="" id="city_select">
+                        <option value="">Al</option>
+                        <option value="">Bl</option>
+                        <option value="">Cl</option>
+                        <option value="">Dl</option>
+                        <option value="">El</option>
+                        <option value="">Fl</option>
+                    </select>
+                </div> 
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1"> 
+                <legend class="legend">Phone</legend>
+                <input id="in3" type="text" placeholder="xxx-xxx-xxxx">
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list2">
+                <legend class="legend">
+                    <div style="font-size: 18px;">Genres  
+                        <span style="color: gainsboro; font-size: 15px;">Ctrl+Click to select multiple</span></div>
+                    
+                </legend>
+                <select name="" id="in5" class="form_select" multiple aria-label="multiple select example">
+                    <option value="1">Jazz</option>
+                    <option value="2">Hip-pop</option>
+                    <option value="3">Sole</option>
+                    <option value="4">Corea-pop</option>
+                    <option value="5">Chinese-pop</option>
+                    <option value="6">Chinese-tradional</option>
+                    <option value="7">European</option>
+                    <option value="8">Country</option>
+                    <option value="9">2000</option>
+                    <option value="10">Dancing</option>
+                </select>
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1">
+                <legend class="legend">Facebook Link</legend>
+                <input id="in6" type="text" placeholder="http://">
+            </div>
+            <div class="margin_bar"></div>
+            <button class="button" >Create Artist</button>
+        </form>
+    </article>
+    <footer class="footer">footer</footer>
+    <script>
+        document.getElementById('main1sub2').onsubmit=function(e){
+            e.preventDefault();
+            console.log('event',e);
+            const states=document.getElementById('city_select');
+            const state_index=states.selectedIndex;
+            const state= states.options[state_index].text;
+            const e2=document.getElementById('in5');
+            var selected = [];
+            for (var option of e2.options)
+            {
+                if (option.selected) {
+                    selected.push(option.text);
+                }
+            }
+            fetch('/artist/create',{
+                method : 'POST',
+                body : JSON.stringify({
+                    'name':document.getElementById('in1').value,
+                    'city':document.getElementById('in2').value,
+                    'state':state,
+                    'genres': selected,
+                    'phone': document.getElementById('in3').value,
+                    'facebook_link': document.getElementById('in6').value
+                }),
+                headers : {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(function(jsonResponse){
+                if(jsonResponse.status=='exist'){
+                    alert('cannot create reapted artist!');
+                    location.reload();
+                }
+                else
+                {
+                    alert('create successfully!');
+                    location.reload();
+                }
+            })
+            .catch((error) => {
+            console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

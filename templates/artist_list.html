@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/css/style_artist_list.css?v=1.0.0">
+    <title>Venues</title>
+    <style>
+        #heada1{
+            background-image: url("{{ url_for('static', filename='images/guangsha.png') }}");
+        }
+        #heada1:hover{
+            background-image: url("{{ url_for('static', filename='images/b.png') }}");
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav id="navi">
+            <div class="headdiv">
+                <a id="heada1" href="main" >
+                </a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="https://itzy.jype.com/" target="_blank">Venues</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">Artists</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">Shows</a>
+            </div>
+        </nav>
+    </header>
+    <div class="list-wrapper">
+        <ul id="artists">
+          {% for artist in artists%}
+          <li class="item">
+            <a href="/artist_list/{{artist.id}}" class="head" art_id="{{artist.name}}" action="">
+              {{artist.name}}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    
+</body>
+</html>

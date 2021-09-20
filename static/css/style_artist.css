@@ -1,0 +1,159 @@
+*{
+    /*border: 1px solid red;*/
+}
+.container{
+    height:830px;
+    display: grid;
+    grid-template-rows: 100px 620px 110px;
+    grid-template-areas: 
+    "hd hd hd hd hd hd hd hd"
+    "m1 m1 m1 m1 m2 m2 m2 m2"
+    "ft ft ft ft ft ft ft ft"
+    ;
+}
+
+#heada1{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    
+    background-size: 40px;
+}
+#heada1:hover{
+    display: flex;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    background-size: 40px;
+}
+.headwordlink{
+    text-decoration: none;
+    color: silver;
+}
+.headwordlink:hover{
+    color: gray;
+}
+
+#navi{
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    margin-left: 55px;
+}
+.headdiv{
+    margin-right: 20px;
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.header{
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    grid-area: hd;
+}
+
+#main1sub1{
+    height: 90px;
+    width: 550px;
+    font-size: 30px;
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    
+}
+
+#in1,#in3,#in4,#in6{
+    font-size: 18px;
+    height: 70%;
+    width: 70%;
+    margin-top: 1%;
+    border-radius: 6%;
+}
+
+
+#in2{
+    height: 70%;
+    width: 35%;
+    margin-top: 1%;
+    border-radius: 6%;  
+    margin-right: 0;  
+    font-size: 18px;
+
+}
+
+::placeholder{
+    color: gainsboro;
+}
+#city_select{
+    height: 25px;
+    width: 35%;
+    margin-top: 1%;
+    border-radius: 6%; 
+    margin-left: 0;
+}
+#in3{
+
+}
+
+
+#list1{
+    font-size: 18px;
+    display: grid;
+    grid-template-rows: 40% 60%;
+
+}
+#list2{
+    font-size: 18px;
+    display: grid;
+    grid-template-rows: 25% 75%;
+}
+legend{
+    display: grid;
+    grid-gap: 0;
+}
+
+.left{
+    height: 620px;
+    width: 550px;
+    align-items:center;
+    justify-content:space-evenly;
+    grid-area: m1;
+    display: grid;
+    grid-template-rows: 90px 530px;
+    grid-area: m1;
+    margin-left: 66px;
+}
+.form1
+{
+    margin-top: 0%;
+    width: 550px;
+    height: 530px;
+    display: grid;
+    grid-template-rows: 60px 20px 60px 20px 60px 20px 100px 20px 60px 20px 60px;
+}
+.margin_bar{
+    height: 20px;
+}
+.button{
+    font-size: 20px;
+    width: 71%;
+    background-color: grey;
+    color: honeydew;
+    border-radius: 5%;
+}
+.button:hover{
+    background-color: orange;
+    
+}
+.footer{
+    height: 100px;
+    grid-area: ft;
+    text-align:left;
+    
+}

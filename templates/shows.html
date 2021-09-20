@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show_Regist</title>
+    <link rel="stylesheet" href="../static/css/style_shows.css?v=1.0.1">
+    <style>
+        #heada1{
+            background-image: url("{{ url_for('static', filename='images/guangsha.png') }}");
+        }
+        #heada1:hover{
+            background-image: url("{{ url_for('static', filename='images/b.png') }}");
+        }
+    </style>
+</head>
+<body class="container">
+    <header class="header">
+        <nav id="navi">
+            <div class="headdiv">
+                <a id="heada1" href="main" >
+                </a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="https://itzy.jype.com/" target="_blank">itzy官网</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">nnn</a>
+            </div>
+            <div class="headdiv">
+                <a class="headwordlink" href="">kkk</a>
+            </div>
+        </nav>
+    </header>
+    
+    <article class="left">
+        <div id="main1sub1">
+            <strong>List a new show</strong>
+        </div>
+        <form class="form1" action="/show/create", id="main1sub2">
+            <div id="list1">
+                <legend class="legend">
+                    <div style="font-size: 18px;">Artist ID  
+                        <span style="color: gainsboro; font-size: 15px;">ID can be found on the Artist's Page</span></div>
+                </legend>
+                <input id="in1" type="text">
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1">
+                <div style="font-size: 18px;">Venue ID  
+                    <span style="color: gainsboro; font-size: 15px;">ID can be found on the Venue's Page</span></div>
+                <input id="in2" type="text">
+            </div>
+            <div class="margin_bar"></div>
+            <div id="list1">
+                <legend class="legend">Start Time</legend>
+                <input id="in3" type="text">
+            </div>
+            <div class="margin_bar"></div>
+            <div class="margin_bar"></div>
+            <button class="button">Create Artist</button>
+        </form>
+            
+    </article>
+    <footer class="footer">footer</footer>
+    <script>
+        document.getElementById('main1sub2').onsubmit=function(e){
+            e.preventDefault();
+            console.log('event',e);
+            fetch('/show/create',{
+                method : 'POST',
+                body : JSON.stringify({
+                    'artist_id':document.getElementById('in1').value,
+                    'venue_id':document.getElementById('in2').value,
+                    'start_time':document.getElementById('in3').value
+                }),
+                headers : {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(function(jsonResponse){
+                if(jsonResponse.status=='exist'){
+                    alert('cannot create reapted show!');
+                    location.reload();
+                }
+                else
+                {
+                    alert('create successfully!');
+                    location.reload();
+                }
+            })
+            .catch((error) => {
+            console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
