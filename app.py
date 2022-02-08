@@ -12,6 +12,33 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False
 db=SQLAlchemy(app)
 migrate=Migrate(app,db)
 
+    
+
+
+
+genre_venue=db.Table('genre_venues',db.Column('item_id',db.Integer,db.ForeignKey('venue.id'),primary_key=True),
+db.Column('genre_id',db.Integer,db.ForeignKey('genres.id'),primary_key=True)
+)
+genre_artist=db.Table('genre_artists',db.Column('item_id',db.Integer,db.ForeignKey('artist.id'),primary_key=True),
+db.Column('genre_id',db.Integer,db.ForeignKey('genres.id'),primary_key=True)
+)
+class Genres(db.Model):
+    id=db.Column(db.Integer,primary_key=True)
+    kind=db.Column(db.String(),nullable=False,default=False)
+    def __repr__(self):
+        return f'<Genres {self.id} {self.kind}>'
+
+class Artist(db.Model):
+    id=db.Column(db.Integer, primary_key=True)
+    name=db.Column(db.String(),nullable=False, default=False)
+    city=db.Column(db.String(),nullable=False,default=False)
+    state=db.Column(db.String(),nullable=False,default=False)
+    phone=db.Column(db.String(), nullable=False,default=False)
+    facebook_link=db.Column(db.String(),nullable=False,default=False)
+    genres=db.relationship('Genres',secondary=genre_artist,backref=db.backref('artist',lazy=True))
+    def __repr__(self):
+        return f'<Artist {self.id} {self.name} {self.city} {self.state} {self.phone} {self.facebook_link}>'
+
 
 class Shows(db.Model):
     id=db.Column(db.Integer,primary_key=True)
@@ -22,15 +49,7 @@ class Shows(db.Model):
     venue=db.relationship('Venue',backref=db.backref('artists'))
 
 
-class Artist(db.Model):
-    id=db.Column(db.Integer, primary_key=True)
-    name=db.Column(db.String(),nullable=False, default=False)
-    city=db.Column(db.String(),nullable=False,default=False)
-    state=db.Column(db.String(),nullable=False,default=False)
-    phone=db.Column(db.String(), nullable=False,default=False)
-    facebook_link=db.Column(db.String(),nullable=False,default=False)
-    def __repr__(self):
-        return f'<Artist {self.id} {self.name} {self.city} {self.state} {self.phone} {self.facebook_link}>'
+
     
 
 class Venue(db.Model):
@@ -40,20 +59,10 @@ class Venue(db.Model):
     state=db.Column(db.String(),nullable=False,default=False)
     phone=db.Column(db.String(),nullable=False,default=False)
     address=db.Column(db.String(),nullable=False,default=False)
+    genres=db.relationship('Genres',secondary=genre_venue,backref=db.backref('venues',lazy=True))
     facebook_link=db.Column(db.String(),nullable=False,default=False)
     def __repr__(self):
         return f'<Venue {self.id} {self.name} {self.city} {self.state} {self.phone} {self.address} {self.facebook_link}>'
-
-    
-
-class Genres(db.Model):
-    id=db.Column(db.Integer,primary_key=True)
-    kind=db.Column(db.String(),nullable=False,default=False)
-    venue_id=db.Column(db.Integer, db.ForeignKey('venue.id',ondelete='CASCADE'))
-    artist_id=db.Column(db.Integer, db.ForeignKey('artist.id',ondelete='CASCADE'))
-    def __repr__(self):
-        return f'<Genres {self.id} {self.kind}>'
-
 class AuthError(Exception):
     def __init__(self, error, status_code):
         self.error = error
@@ -155,14 +164,15 @@ def create_venue():
             body['status']=['exist']
         else :
             venue=Venue(name=name,city=city,state=state,phone=phone,address=address,facebook_link=facebook_link)
-            db.session.add(venue)
-            db.session.commit()
-            venue_id=venue.id
             genres=request.get_json()['genres']
-            for genre in genres:
-                kind=genre
-                gen=Genres(kind=kind,venue_id=venue_id)
-                db.session.add(gen)
+            for kind in genres:
+                    dbgen=Genres.query.filter_by(kind=kind).first()
+                    if dbgen != None:
+                        venue.genres.append(dbgen)
+                    else:
+                        gen=Genres(kind=kind)
+                        venue.genres.append(gen)
+            db.session.add(venue)
             db.session.commit()
             body['name']=venue.name
     except:
