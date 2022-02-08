@@ -22,6 +22,7 @@ db.Column('genre_id',db.Integer,db.ForeignKey('genres.id'),primary_key=True)
 genre_artist=db.Table('genre_artists',db.Column('item_id',db.Integer,db.ForeignKey('artist.id'),primary_key=True),
 db.Column('genre_id',db.Integer,db.ForeignKey('genres.id'),primary_key=True)
 )
+
 class Genres(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     kind=db.Column(db.String(),nullable=False,default=False)
@@ -119,15 +120,14 @@ def artist_list():
 @app.route('/artist_list/<artist_id>')
 def get_artist(artist_id):
     return render_template('artist_intro.html',
-    art=Artist.query.filter_by(id=artist_id).first(),
-    gens=Genres.query.filter_by(artist_id=artist_id).all() 
+    art=Artist.query.filter_by(id=artist_id).first()
     )
 
 @app.route('/venue_list/<venue_id>')
 def get_venue(venue_id):
     return render_template('venue_intro.html',
     ve=Venue.query.filter_by(id=venue_id).first(),
-    gens=Genres.query.filter_by(venue_id=venue_id).all() #use get method instead of query or .first since we get only one object
+    #use get method instead of query or .first since we get only one object
     )
 
 @app.route('/venue_list/<venue_id>/delete', methods=['DELETE'])
@@ -203,14 +203,15 @@ def create_artist():
             body['status']=['exist']
         else:
             artist=Artist(name=name,city=city,state=state,phone=phone,facebook_link=facebook_link)
-            db.session.add(artist)
-            db.session.commit()
-            artist_id=artist.id
             genres=request.get_json()['genres']
-            for genre in genres:
-                kind=genre
-                gen=Genres(kind=kind,artist_id=artist_id)
-                db.session.add(gen)
+            for kind in genres:
+                    dbgen=Genres.query.filter_by(kind=kind).first()
+                    if dbgen != None:
+                        artist.genres.append(dbgen)
+                    else:
+                        gen=Genres(kind=kind)
+                        artist.genres.append(gen)
+            db.session.add(artist)
             db.session.commit()
             body['name']=artist.name   
     except:
