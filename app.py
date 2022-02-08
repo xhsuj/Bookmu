@@ -121,6 +121,17 @@ def get_venue(venue_id):
     gens=Genres.query.filter_by(venue_id=venue_id).all() #use get method instead of query or .first since we get only one object
     )
 
+@app.route('/venue_list/<venue_id>/delete', methods=['DELETE'])
+def delete_venue(venue_id):
+    try:
+        Venue.query.filter_by(id=venue_id).delete()
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+    return
+
 @app.route('/show_list')
 def get_shows():
     return render_template('show_list.html',
